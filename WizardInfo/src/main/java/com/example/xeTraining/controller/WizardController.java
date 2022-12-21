@@ -49,7 +49,7 @@ public class WizardController
         wizardRepo.save(wizardInfoUpdated);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteWizardInfo(@PathVariable(value = "wizard_id") Long id)
     {
         wizardRepo.deleteById(id);

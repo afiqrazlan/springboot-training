@@ -45,7 +45,7 @@ public class OrderController {
         orderRepo.save(orderUpdated);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteOrder(@PathVariable(value = "order_id") Long id)
     {
         orderRepo.deleteById(id);

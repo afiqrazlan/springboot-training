@@ -49,7 +49,7 @@ public class MagicWandController
         wandRepo.save(magicWandUpdated);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteMagicWand(@PathVariable(value = "wand_id") Long id)
     {
         wandRepo.deleteById(id);
