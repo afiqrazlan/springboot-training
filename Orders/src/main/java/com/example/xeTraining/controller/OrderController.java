@@ -4,10 +4,7 @@ import com.example.xeTraining.entity.Orders;
 import com.example.xeTraining.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,4 +30,24 @@ public class OrderController {
         return orderRepo.findAll();
     }
 
+    @PostMapping("/add")
+    public void addOrder(@RequestBody Orders order)
+    {
+        orderRepo.save(order);
+    }
+
+    @PutMapping("/update/{id}")
+    public void updateOrder(@PathVariable Long id, @RequestBody Orders order)
+    {
+        Orders orderUpdated = new Orders();
+        orderUpdated.setId(id);
+
+        orderRepo.save(orderUpdated);
+    }
+
+    @PostMapping("/delete/{id}")
+    public void deleteOrder(@PathVariable(value = "order_id") Long id)
+    {
+        orderRepo.deleteById(id);
+    }
 }

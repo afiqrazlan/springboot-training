@@ -10,6 +10,9 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    public Orders() {
+    }
+
     public Orders(Long id) {
         this.id = id;
     }
