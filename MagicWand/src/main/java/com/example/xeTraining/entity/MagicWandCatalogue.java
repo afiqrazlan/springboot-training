@@ -19,6 +19,9 @@ public class MagicWandCatalogue
     @Column(name = "wand_stock")
     int stock;
 
+    public MagicWandCatalogue() {
+    }
+
     public MagicWandCatalogue(Long id, String name, String desc, int age_limit, int stock) {
         this.id = id;
         this.name = name;
