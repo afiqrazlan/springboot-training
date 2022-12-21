@@ -4,10 +4,7 @@ import com.example.xeTraining.entity.WizardInfo;
 import com.example.xeTraining.repository.WizardInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +28,30 @@ public class WizardController
     public List<WizardInfo> getWizardList ()
     {
         return wizardRepo.findAll();
+    }
+
+    @PostMapping("/add")
+    public void addWizardInfo(@RequestBody WizardInfo wizardInfo)
+    {
+        wizardRepo.save(wizardInfo);
+    }
+
+    @PutMapping("/update/{id}")
+    public void updateWizardInfo(@PathVariable Long id, @RequestBody WizardInfo wizardInfo)
+    {
+        WizardInfo wizardInfoUpdated = new WizardInfo();
+        wizardInfoUpdated.setId(id);
+        wizardInfoUpdated.setName(wizardInfo.getName());
+        wizardInfoUpdated.setAge(wizardInfo.getAge());
+        wizardInfoUpdated.setStatus(wizardInfo.getStatus());
+        wizardInfoUpdated.setJoined_date(wizardInfo.getJoined_date());
+
+        wizardRepo.save(wizardInfoUpdated);
+    }
+
+    @PostMapping("/delete/{id}")
+    public void deleteWizardInfo(@PathVariable(value = "wizard_id") Long id)
+    {
+        wizardRepo.deleteById(id);
     }
 }
