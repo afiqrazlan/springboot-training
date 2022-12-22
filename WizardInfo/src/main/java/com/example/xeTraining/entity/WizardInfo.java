@@ -3,6 +3,7 @@ package com.example.xeTraining.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -18,14 +19,14 @@ public class WizardInfo {
     @Column(name = "wizard_age")
     int age;
     @Column(name = "joined_date")
-    Date joined_date;
+    String joined_date;
     @Column(name = "wizard_status")
-    String status;
+    boolean status;
 
     public WizardInfo() {
     }
 
-    public WizardInfo(Long id, String name, int age, Date joined_date, String status) {
+    public WizardInfo(Long id, String name, int age, String joined_date, boolean status) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -57,19 +58,19 @@ public class WizardInfo {
         this.age = age;
     }
 
-    public Date getJoined_date() {
+    public String getJoined_date() {
         return joined_date;
     }
 
-    public void setJoined_date(Date joined_date) {
+    public void setJoined_date(String joined_date) {
         this.joined_date = joined_date;
     }
 
-    public String getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 

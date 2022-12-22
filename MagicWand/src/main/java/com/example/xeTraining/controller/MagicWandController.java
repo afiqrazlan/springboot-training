@@ -1,7 +1,7 @@
 package com.example.xeTraining.controller;
 
 import com.example.xeTraining.entity.MagicWandCatalogue;
-import com.example.xeTraining.repository.MagicWandRepository;
+import com.example.xeTraining.service.MagicWandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,46 +13,39 @@ import java.util.List;
 public class MagicWandController
 {
     @Autowired
-    private final MagicWandRepository wandRepo;
+    private final MagicWandService magicWandService;
 
-    public MagicWandController(MagicWandRepository wandRepo) {
-        this.wandRepo = wandRepo;
+    public MagicWandController(MagicWandService magicWandService) {
+        this.magicWandService = magicWandService;
     }
 
     @GetMapping("/test/{id}")
     public ResponseEntity<?> test(@PathVariable(value = "id") long id) {
-        return ResponseEntity.ok(wandRepo.findById(id).get());
+        return ResponseEntity.ok(magicWandService.getMagicWandById(id));
     }
 
     @GetMapping("/wandList")
-    public List<MagicWandCatalogue> getOrderList ()
+    public List<MagicWandCatalogue> getList ()
     {
-        return wandRepo.findAll();
+        return magicWandService.getMagicWandList();
     }
 
     @PostMapping("/add")
     public void addMagicWand(@RequestBody MagicWandCatalogue magicWand)
     {
-        wandRepo.save(magicWand);
+        magicWandService.addMagicWandInfo(magicWand);
     }
 
     @PutMapping("/update/{id}")
     public void updateMagicWand(@PathVariable Long id, @RequestBody MagicWandCatalogue magicWand)
     {
-        MagicWandCatalogue magicWandUpdated = new MagicWandCatalogue();
-        magicWandUpdated.setId(id);
-        magicWandUpdated.setName(magicWand.getName());
-        magicWandUpdated.setDesc(magicWandUpdated.getDesc());
-        magicWandUpdated.setStock(magicWand.getStock());
-        magicWandUpdated.setAge_limit(magicWand.getAge_limit());
-
-        wandRepo.save(magicWandUpdated);
+        magicWandService.updateMagicWandInfo(id, magicWand);
     }
 
     @DeleteMapping("/delete/{id}")
     public void deleteMagicWand(@PathVariable(value = "wand_id") Long id)
     {
-        wandRepo.deleteById(id);
+        magicWandService.deleteMagicWandInfo(id);
     }
 
 
