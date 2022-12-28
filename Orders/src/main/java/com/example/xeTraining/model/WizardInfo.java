@@ -1,30 +1,22 @@
-package com.example.xeTraining.entity;
+package com.example.xeTraining.model;
 
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "wizard_info")
 @Data
 public class WizardInfo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "wizard_id")
     Long id;
-    @NotNull(message = "Wizard name cannot be null")
-    @NotBlank(message = "Wizard name cannot be blank")
-    @Size(min =3, max= 100, message = "Name must be between 3 - 100 characters")
-    @Column(name = "wizard_name")
     String name;
-    @Column(name = "wizard_age")
-    @Min(value = 18, message = "Wizard must be 18 or above")
-    @Max(value = 100, message = "Wizard age cannot exceed 100")
     int age;
-    @Column(name = "joined_date")
     String joined_date;
-    @Column(name = "wizard_status")
     boolean status;
 
     public WizardInfo() {

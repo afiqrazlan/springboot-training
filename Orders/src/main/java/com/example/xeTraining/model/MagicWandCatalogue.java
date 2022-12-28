@@ -1,7 +1,6 @@
-package com.example.xeTraining.entity;
+package com.example.xeTraining.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 @Entity
 @Table(name = "wand_info")
@@ -11,22 +10,13 @@ public class MagicWandCatalogue
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "wand_id")
     Long id;
-    @NotBlank(message = "Wand name cannot be blank")
-    @NotNull(message = "Wand name cannot be null")
-    @Size(min = 5, message = "Wand name must be more than 5 characters")
     @Column(name = "wand_name")
     String name;
-    @NotNull(message = "Wand description cannot be null")
-    @NotBlank(message = "Wand description cannot be blank")
-    @Size(min = 0, max = 200, message = "Wand description must be between 0-200 characters")
     @Column(name = "wand_desc")
     String desc;
-    @Min(value = 3, message = "Age limit cannot be less than 3")
-    @Max(value = 100, message = "Age limit cannot be more than 100")
     @Column(name = "age_limit")
-    int age_limit;
 
-    @Min(value = 0, message = "Wand stock cannot be less than 0")
+    int age_limit;
     @Column(name = "wand_stock")
     int stock;
 
