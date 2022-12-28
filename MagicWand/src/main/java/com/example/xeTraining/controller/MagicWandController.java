@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,22 +32,21 @@ public class MagicWandController
     }
 
     @PostMapping("/add")
-    public void addMagicWand(@RequestBody MagicWandCatalogue magicWand)
+    public void addMagicWand(@RequestBody @Valid MagicWandCatalogue magicWand)
     {
         magicWandService.addMagicWandInfo(magicWand);
     }
 
     @PutMapping("/update/{id}")
-    public void updateMagicWand(@PathVariable Long id, @RequestBody MagicWandCatalogue magicWand)
+    public void updateMagicWand(@PathVariable(value = "id") Long id, @RequestBody MagicWandCatalogue magicWand)
     {
         magicWandService.updateMagicWandInfo(id, magicWand);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteMagicWand(@PathVariable(value = "wand_id") Long id)
+    public void deleteMagicWand(@PathVariable(value = "id") Long id)
     {
         magicWandService.deleteMagicWandInfo(id);
     }
-
 
 }

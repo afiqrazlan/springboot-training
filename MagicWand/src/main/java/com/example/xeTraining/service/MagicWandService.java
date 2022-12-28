@@ -1,6 +1,7 @@
 package com.example.xeTraining.service;
 
 import com.example.xeTraining.entity.MagicWandCatalogue;
+import com.example.xeTraining.exception.WandNotFoundException;
 import com.example.xeTraining.repository.MagicWandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class MagicWandService
 
     public MagicWandCatalogue getMagicWandById(Long id)
     {
-        return magicWandRepo.findById(id).orElse(null);
+        return magicWandRepo.findById(id).orElseThrow(() -> new WandNotFoundException("No wand with ID: " + id));
     }
     
     public void addMagicWandInfo(MagicWandCatalogue magicWand)
@@ -37,7 +38,7 @@ public class MagicWandService
         MagicWandCatalogue magicWandUpdated = new MagicWandCatalogue();
         magicWandUpdated.setId(id);
         magicWandUpdated.setName(magicWand.getName());
-        magicWandUpdated.setDesc(magicWandUpdated.getDesc());
+        magicWandUpdated.setDesc(magicWand.getDesc());
         magicWandUpdated.setStock(magicWand.getStock());
         magicWandUpdated.setAge_limit(magicWand.getAge_limit());
 

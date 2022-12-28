@@ -1,11 +1,16 @@
 package com.example.xeTraining.controller;
 
-import com.example.xeTraining.entity.Orders;
+import com.example.xeTraining.model.Orders;
+import com.example.xeTraining.model.WizardInfo;
+import com.example.xeTraining.service.MagicWandService;
 import com.example.xeTraining.service.OrderService;
+import com.example.xeTraining.service.WizardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +24,6 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-
     @GetMapping("/test/{id}")
     public ResponseEntity<?> test(@PathVariable(value = "id") long id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
@@ -32,20 +36,21 @@ public class OrderController {
     }
 
     @PostMapping("/add")
-    public void addOrder(@RequestBody Orders order)
+    public void addOrder(@RequestBody @Valid Orders order)
     {
         orderService.addOrderInfo(order);
     }
 
     @PutMapping("/update/{id}")
-    public void updateOrder(@PathVariable Long id, @RequestBody Orders order)
+    public void updateOrder(@PathVariable(value = "id") Long id, @RequestBody Orders order)
     {
         orderService.updateOrderInfo(id, order);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteOrder(@PathVariable(value = "order_id") Long id)
+    public void deleteOrder(@PathVariable(value = "id") Long id)
     {
         orderService.deleteOrderInfo(id);
     }
+
 }

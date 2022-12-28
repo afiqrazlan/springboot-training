@@ -1,6 +1,7 @@
 package com.example.xeTraining.service;
 
 import com.example.xeTraining.entity.WizardInfo;
+import com.example.xeTraining.exception.WizardNotFoundException;
 import com.example.xeTraining.repository.WizardInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class WizardService
 
     public WizardInfo getWizardById(Long id)
     {
-        return wizardRepo.findById(id).orElse(null);
+        return wizardRepo.findById(id).orElseThrow(() -> new WizardNotFoundException("No wizard with ID: " + id));
     }
 
     public List<WizardInfo> getWizardList ()
