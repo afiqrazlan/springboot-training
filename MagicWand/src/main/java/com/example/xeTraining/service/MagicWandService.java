@@ -35,18 +35,24 @@ public class MagicWandService
 
     public void updateMagicWandInfo( Long id, MagicWandCatalogue magicWand)
     {
-        MagicWandCatalogue magicWandUpdated = new MagicWandCatalogue();
-        magicWandUpdated.setId(id);
-        magicWandUpdated.setName(magicWand.getName());
-        magicWandUpdated.setDesc(magicWand.getDesc());
-        magicWandUpdated.setStock(magicWand.getStock());
-        magicWandUpdated.setAge_limit(magicWand.getAge_limit());
+        if(getMagicWandById(id) != null)
+        {
+            MagicWandCatalogue magicWandUpdated = new MagicWandCatalogue();
+            magicWandUpdated.setId(id);
+            magicWandUpdated.setName(magicWand.getName());
+            magicWandUpdated.setDesc(magicWand.getDesc());
+            magicWandUpdated.setStock(magicWand.getStock());
+            magicWandUpdated.setAge_limit(magicWand.getAge_limit());
 
-        magicWandRepo.save(magicWandUpdated);
+            magicWandRepo.save(magicWandUpdated);
+        }
     }
     
     public void deleteMagicWandInfo(Long id)
     {
-        magicWandRepo.deleteById(id);
+        if(getMagicWandById(id) != null)
+        {
+            magicWandRepo.deleteById(id);
+        }
     }
 }

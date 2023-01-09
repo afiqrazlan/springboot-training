@@ -6,6 +6,7 @@ import com.example.xeTraining.service.MagicWandService;
 import com.example.xeTraining.service.OrderService;
 import com.example.xeTraining.service.WizardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -36,6 +37,7 @@ public class OrderController {
     }
 
     @PostMapping("/add")
+    @ResponseStatus(code = HttpStatus.ACCEPTED)
     public void addOrder(@RequestBody @Valid Orders order)
     {
         orderService.addOrderInfo(order);

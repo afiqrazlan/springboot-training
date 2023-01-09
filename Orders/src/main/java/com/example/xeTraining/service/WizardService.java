@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -23,16 +24,22 @@ public class WizardService
 
     public ResponseEntity<WizardInfo> getWizardByID(Long id)
     {
-        ResponseEntity<WizardInfo> responseEntity = restTemplate.getForEntity("http://localhost:8082/api/demo/wizard/test/" + id, WizardInfo.class);
-        WizardInfo wizardInfo = responseEntity.getBody();
+        try {
+            ResponseEntity<WizardInfo> responseEntity = restTemplate.getForEntity("http://localhost:8082/api/demo/wizard/test/" + id, WizardInfo.class);
+            WizardInfo wizardInfo = responseEntity.getBody();
 
-        if(wizardInfo.getId() != null)
-        {    return ResponseEntity.ok().body(wizardInfo); }
-
-        else
-        {
-            throw new NullPointerException("heh");
+            if (wizardInfo.getId() != null) {
+                return ResponseEntity.ok().body(wizardInfo);
+            } else {
+                throw new NullPointerException("heh");
+            }
         }
+
+        catch(ResourceAccessException e)
+        {
+            throw new ResourceAccessException("Error: Check if WizardInfo Service is online");
+        }
+
     }
 
 }

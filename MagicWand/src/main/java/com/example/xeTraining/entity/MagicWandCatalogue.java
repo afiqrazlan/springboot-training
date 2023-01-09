@@ -21,12 +21,12 @@ public class MagicWandCatalogue
     @Size(min = 0, max = 200, message = "Wand description must be between 0-200 characters")
     @Column(name = "wand_desc")
     String desc;
-    @Min(value = 3, message = "Age limit cannot be less than 3")
+    @Min(value = 18, message = "Age limit cannot be less than 18")
     @Max(value = 100, message = "Age limit cannot be more than 100")
     @Column(name = "age_limit")
     int age_limit;
 
-    @Min(value = 0, message = "Wand stock cannot be less than 0")
+    @PositiveOrZero(message = "Wand stock cannot be less than 0")
     @Column(name = "wand_stock")
     int stock;
 

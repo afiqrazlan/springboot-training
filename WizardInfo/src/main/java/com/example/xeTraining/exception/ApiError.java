@@ -1,5 +1,6 @@
 package com.example.xeTraining.exception;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,9 +69,8 @@ public class ApiError {
             logger.info("Trace ID for Exception errors: {}", span.context().traceId(),ex);
             traceID = span.context().traceId();
         }
-
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"NOK",1,traceID);
-        List<String> errors = Collections.singletonList(ex.getMessage());
+        List<String> errors = Collections.singletonList(ExceptionUtils.getRootCauseMessage(ex));
         errorResponse.setErrors(errors);
 
         errorResponse.setErrors(errors);
@@ -88,7 +88,7 @@ public class ApiError {
         }
 
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"NOK",1,traceID);
-        List<String> errors = Collections.singletonList(ex.getMessage());
+        List<String> errors = Collections.singletonList(ExceptionUtils.getRootCauseMessage(ex));
         errorResponse.setErrors(errors);
 
         errorResponse.setErrors(errors);

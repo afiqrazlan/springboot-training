@@ -19,11 +19,9 @@ import java.util.UUID;
 public class WizardController
 {
     @Autowired
-    private final WizardService wizardService;
+    private WizardService wizardService;
 
-    public WizardController(WizardService wizardService) {
-        this.wizardService = wizardService;
-    }
+    //public WizardController(WizardService wizardService) {this.wizardService = wizardService;}
 
     @GetMapping("/test/{id}")
     public ResponseEntity<WizardInfo> test(@PathVariable(value = "id") Long id){
@@ -52,5 +50,23 @@ public class WizardController
     public void deleteWizard(@PathVariable(value = "id") Long id)
     {
         wizardService.deleteWizardInfo(id);
+    }
+
+    @GetMapping("/getDate/{date}")
+    public List<WizardInfo> getWizardByDate(@PathVariable String date)
+    {
+        return wizardService.getWizardByDate(date);
+    }
+
+    @GetMapping("/getStatus/{status}")
+    public List<WizardInfo> getWizardByStatus(@PathVariable boolean status)
+    {
+        return wizardService.getWizardByStatus(status);
+    }
+
+    @GetMapping("/getAgeRange/{age1}-{age2}")
+    public List<WizardInfo> getWizardByAgeBetween(@PathVariable(value = "age1") int age1, @PathVariable(value = "age2") int age2)
+    {
+        return wizardService.getWizardByAgeBetween(age1, age2);
     }
 }

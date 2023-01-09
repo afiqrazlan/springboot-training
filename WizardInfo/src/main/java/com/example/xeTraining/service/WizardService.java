@@ -32,26 +32,50 @@ public class WizardService
 
     public void addWizardInfo(WizardInfo wizardInfo)
     {
-        wizardInfo.setJoined_date(String.valueOf(java.time.LocalDate.now()));
+        wizardInfo.setJoinedDate(String.valueOf(java.time.LocalDate.now()));
         wizardInfo.setStatus(true);
         wizardRepo.save(wizardInfo);
     }
 
     public void updateWizardInfo(Long id,WizardInfo wizardInfo)
     {
-        WizardInfo wizardInfoUpdated = new WizardInfo();
-        String joinedDate = String.valueOf(wizardInfo.getJoined_date());
-        wizardInfoUpdated.setId(id);
-        wizardInfoUpdated.setName(wizardInfo.getName());
-        wizardInfoUpdated.setAge(wizardInfo.getAge());
-        wizardInfoUpdated.setStatus(wizardInfo.getStatus());
-        wizardInfoUpdated.setJoined_date(joinedDate);
+        if(getWizardById(id) != null) {
+            WizardInfo wizardInfoUpdated = new WizardInfo();
+            String joinedDate = "";
+            if(wizardInfo.getJoinedDate() != null)
+            {   joinedDate = String.valueOf(wizardInfo.getJoinedDate()); }
+            else
+            {   joinedDate = String.valueOf(getWizardById(id).getJoinedDate()); }
+            wizardInfoUpdated.setId(id);
+            wizardInfoUpdated.setName(wizardInfo.getName());
+            wizardInfoUpdated.setAge(wizardInfo.getAge());
+            wizardInfoUpdated.setStatus(wizardInfo.getStatus());
+            wizardInfoUpdated.setJoinedDate(joinedDate);
 
-        wizardRepo.save(wizardInfoUpdated);
+            wizardRepo.save(wizardInfoUpdated);
+        }
     }
 
     public void deleteWizardInfo(Long id)
     {
-        wizardRepo.deleteById(id);
+        if(getWizardById(id) != null)
+        {
+            wizardRepo.deleteById(id);
+        }
+    }
+
+    public List<WizardInfo> getWizardByDate(String date)
+    {
+        return wizardRepo.findWizardsByJoinedDate(date);
+    }
+
+    public List<WizardInfo> getWizardByStatus(boolean status)
+    {
+        return wizardRepo.findWizardsByStatus(status);
+    }
+
+    public List<WizardInfo> getWizardByAgeBetween(int age1, int age2)
+    {
+        return wizardRepo.findWizardsByAgeBetween(age1, age2);
     }
 }

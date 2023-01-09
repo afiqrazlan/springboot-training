@@ -23,7 +23,7 @@ public class WizardInfo {
     @Max(value = 100, message = "Wizard age cannot exceed 100")
     int age;
     @Column(name = "joined_date")
-    String joined_date;
+    String joinedDate;
     @Column(name = "wizard_status")
     boolean status;
 
@@ -34,7 +34,7 @@ public class WizardInfo {
         this.id = id;
         this.name = name;
         this.age = age;
-        this.joined_date = joined_date;
+        this.joinedDate = joined_date;
         this.status = status;
     }
 
@@ -62,12 +62,12 @@ public class WizardInfo {
         this.age = age;
     }
 
-    public String getJoined_date() {
-        return joined_date;
+    public String getJoinedDate() {
+        return joinedDate;
     }
 
-    public void setJoined_date(String joined_date) {
-        this.joined_date = joined_date;
+    public void setJoinedDate(String joinedDate) {
+        this.joinedDate = joinedDate;
     }
 
     public boolean getStatus() {

@@ -8,11 +8,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class MagicWandService
-{
+public class MagicWandService {
     RestTemplate restTemplate = new RestTemplate();
 
     public JsonNode getWandList() throws JsonProcessingException {
@@ -23,17 +23,33 @@ public class MagicWandService
         return root;
     }
 
-    public ResponseEntity<MagicWandCatalogue> getWandByID(Long id)
-    {
-        ResponseEntity<MagicWandCatalogue> responseEntity = restTemplate.getForEntity("http://localhost:8081/api/demo/magic-wand/test/" + id, MagicWandCatalogue.class);
-        MagicWandCatalogue magicWand = responseEntity.getBody();
+    public ResponseEntity<MagicWandCatalogue> getWandByID(Long id) {
+        try {
+            ResponseEntity<MagicWandCatalogue> responseEntity = restTemplate.getForEntity("http://localhost:8081/api/demo/magic-wand/test/" + id, MagicWandCatalogue.class);
+            MagicWandCatalogue magicWand = responseEntity.getBody();
 
-        if(magicWand.getId() != null)
-        {    return ResponseEntity.ok().body(magicWand); }
-
-        else
+            if (magicWand.getId() != null) {
+                return ResponseEntity.ok().body(magicWand);
+            } else {
+                throw new NullPointerException("heh");
+            }
+        }
+        catch(ResourceAccessException e)
         {
-            throw new NullPointerException("heh");
+            throw new ResourceAccessException("Error: Check if MagicWand Service is online");
+        }
+    }
+
+    public void updateMagicWandStock(MagicWandCatalogue magicWand)
+    {
+        try
+        {
+            restTemplate.put("http://localhost:8081/api/demo/magic-wand/update/" + magicWand.getId(), magicWand);
+        }
+
+        catch(ResourceAccessException e)
+        {
+            throw new ResourceAccessException("Error: Check if MagicWand Service is online");
         }
     }
 }

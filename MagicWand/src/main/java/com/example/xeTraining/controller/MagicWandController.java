@@ -38,7 +38,7 @@ public class MagicWandController
     }
 
     @PutMapping("/update/{id}")
-    public void updateMagicWand(@PathVariable(value = "id") Long id, @RequestBody MagicWandCatalogue magicWand)
+    public void updateMagicWand(@PathVariable(value = "id") Long id, @RequestBody @Valid MagicWandCatalogue magicWand)
     {
         magicWandService.updateMagicWandInfo(id, magicWand);
     }

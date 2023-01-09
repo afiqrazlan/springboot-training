@@ -16,19 +16,13 @@ import java.util.List;
 public class OrderService
 {
     @Autowired
-    private final OrderRepository orderRepo;
+    private OrderRepository orderRepo;
     @Autowired
-    private final WizardService wizardService;
+    private WizardService wizardService;
     @Autowired
-    private final MagicWandService magicWandService;
+    private MagicWandService magicWandService;
 
     RestTemplate restTemplate = new RestTemplate();
-
-    public OrderService(OrderRepository orderRepo, WizardService wizardService, MagicWandService magicWandService) {
-        this.orderRepo = orderRepo;
-        this.wizardService = wizardService;
-        this.magicWandService = magicWandService;
-    }
 
     public List<Orders> getAllOrder ()
     {
@@ -42,38 +36,60 @@ public class OrderService
 
     public void addOrderInfo(Orders order)
     {
-        WizardInfo wizardInfo = wizardService.getWizardByID(order.getWizardId()).getBody();
-        MagicWandCatalogue magicWand = magicWandService.getWandByID(order.getWandId()).getBody();
-
-        if(wizardInfo != null && magicWand != null)
+        boolean isOrderExist = checkExistingOrder(order);
+        if(isOrderExist == true)
         {
-            if(!wizardInfo.getStatus())
-                throw new BadRequestException("Cannot Add Order: Wizard is inactive");
-            else if(magicWand.getStock() == 0)
-                throw new BadRequestException("Cannot Add Order: Wand is out of stock");
-            else if(wizardInfo.getAge() < magicWand.getAge_limit())
-                throw new BadRequestException("Cannot Add Order: Wizard's age is below the age requirement");
-            else if(order.getQuantity() > magicWand.getStock())
-                throw new BadRequestException("Cannot Add Order: Quantity requested is more than available wand stock");
-            else
+            WizardInfo wizardInfo = wizardService.getWizardByID(order.getWizardId()).getBody();
+            MagicWandCatalogue magicWand = magicWandService.getWandByID(order.getWandId()).getBody();
+
+            if (wizardInfo != null && magicWand != null)
             {
-                magicWand.setStock(magicWand.getStock() - order.getQuantity());
-                restTemplate.put("http://localhost:8081/api/demo/magic-wand/update/" + magicWand.getId(), magicWand);
-                orderRepo.save(order);
+                boolean isOrderValid = validateOrderInfo(order, wizardInfo, magicWand);
+                if (isOrderValid == true)
+                {
+                    magicWand.setStock(magicWand.getStock() - order.getQuantity());
+                    magicWandService.updateMagicWandStock(magicWand);
+                    orderRepo.save(order);
+                }
             }
         }
-        else
-            System.out.println("Error occurred");
     }
 
     public void updateOrderInfo(Long id, Orders order)
     {
-        Orders orderUpdated = new Orders();
-        orderUpdated.setId(id);
-        orderUpdated.setWizardId(order.getWizardId());
-        orderUpdated.setWandId(order.getWandId());
+        Orders existingOrder = getOrderById(id);
+        if(existingOrder != null)
+        {
+            WizardInfo wizardInfo = wizardService.getWizardByID(order.getWizardId()).getBody();
+            MagicWandCatalogue magicWand = magicWandService.getWandByID(order.getWandId()).getBody();
 
-        orderRepo.save(orderUpdated);
+            if(wizardInfo != null && magicWand != null)
+            {
+                boolean isOrderValid = validateOrderInfo(order, wizardInfo, magicWand);
+                if (isOrderValid == true) {
+                    Orders orderUpdated = new Orders();
+                    orderUpdated.setId(id);
+                    orderUpdated.setWizardId(order.getWizardId());
+                    orderUpdated.setWandId(order.getWandId());
+                    orderUpdated.setQuantity(order.getQuantity());
+
+                    if(existingOrder.getQuantity() < orderUpdated.getQuantity())
+                    {
+                        magicWand.setStock(magicWand.getStock() - (orderUpdated.getQuantity() - existingOrder.getQuantity()));
+                        magicWandService.updateMagicWandStock(magicWand);
+                    }
+
+                    else if(existingOrder.getQuantity() > orderUpdated.getQuantity())
+                    {
+                        magicWand.setStock(magicWand.getStock() + (existingOrder.getQuantity() - orderUpdated.getQuantity()));
+                        magicWandService.updateMagicWandStock(magicWand);
+                    }
+
+                    orderRepo.save(orderUpdated);
+                }
+            }
+        }
+
     }
 
     public void deleteOrderInfo(Long id)
@@ -83,9 +99,42 @@ public class OrderService
         if(magicWand != null)
         {
             magicWand.setStock(magicWand.getStock() + order.getQuantity());
-            restTemplate.put("http://localhost:8081/api/demo/magic-wand/update/" + magicWand.getId(), magicWand);
+            magicWandService.updateMagicWandStock(magicWand);
         }
 
         orderRepo.deleteById(id);
+    }
+
+    public boolean validateOrderInfo(Orders order, WizardInfo wizardInfo, MagicWandCatalogue magicWand)
+    {
+        if(!wizardInfo.isStatus())
+            throw new BadRequestException("Cannot Add Order: Wizard is inactive");
+        else if(magicWand.getStock() == 0)
+            throw new BadRequestException("Cannot Add Order: Wand is out of stock");
+        else if(wizardInfo.getAge() < magicWand.getAge_limit())
+            throw new BadRequestException("Cannot Add Order: Wizard's age is below the age requirement");
+        else if(order.getQuantity() > magicWand.getStock())
+            throw new BadRequestException("Cannot Add Order: Quantity requested is more than available wand stock");
+        else
+            return true;
+    }
+
+    public boolean checkExistingOrder(Orders order)
+    {
+        List<Orders> existingOrders = orderRepo.findOrdersByWizardId(order.getWizardId());
+
+        for(Orders checkOrder: existingOrders)
+        {
+            if (checkOrder.getWizardId().equals(order.getWizardId())
+                    && checkOrder.getWandId().equals(order.getWandId()))
+            {
+                throw new BadRequestException("Wizard already ordered this wand, please use update to change anything.");
+            }
+
+            else
+                break;
+        }
+
+        return true;
     }
 }
